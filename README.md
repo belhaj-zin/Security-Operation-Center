@@ -20,10 +20,10 @@ This lab demonstrates the practical application of Windows Server administration
 **Technology Stack**
 
 - **Hypervisor:** VMware Workstation / VirtualBox
-- **Server OS:** Windows Server 2019/2022 (Domain Controller)
+- **Server OS:** Windows Server 2019 (Domain Controller)
 - **Client OS:** Windows 10 Enterprise
 - **Network Security:** OPNsense Firewall & Proxy
-- **Management:** Active Directory (AD DS), Group Policy Management (GPMC), PowerShell
+- **Management:** Active Directory (AD DS), Group Policy Management (GPMC)
 
 ## **Phase 1 : Setup and connectivity**
 
@@ -32,7 +32,7 @@ This lab demonstrates the practical application of Windows Server administration
 ### **Architectural Design Decisions :**
 
 1. Hypervisor Selection: QEMU/KVM :QEMU/KVM was selected because it leverages Kernel-based Virtual Machine (KVM) technology to achieve Type 1 (bare-metal) performance characteristics. By transforming the Linux kernel itself into a hypervisor, it allows VMs to bypass the traditional Operating System translation layer required by Type 2 hypervisors (like VMware Workstation). This direct hardware access significantly reduces overhead, resulting in lower latency and near-native execution speeds.
-2. Network Topology :The infrastructure utilizes a **Host-Only (Private) Network** architecture. All virtual machines are connected to a centralized virtual switch (vSwitch) operating on the `10.0.0.0/24` subnet. This design creates a "Sandbox" environment—a completely isolated ecosystem where network traffic can be generated, monitored, and analyzed without interfering with the host machine or the external public internet.
+2. Network Topology :The infrastructure utilizes a **Private Network** architecture. All virtual machines are connected to a centralized virtual switch (vSwitch) operating on the `10.0.0.0/24` subnet. This design creates a "Sandbox" environment—a completely isolated ecosystem where network traffic can be generated, monitored, and analyzed without interfering with the host machine or the external public internet.
 
 ### **Implementation details :**
 
@@ -40,7 +40,7 @@ This lab demonstrates the practical application of Windows Server administration
 
 | **Machine Name** | **Role** | **OS** | **RAM** | **IP Address** |
 | --- | --- | --- | --- | --- |
-| **DC01** | Domain Controller | Windows Server 2022 | 4GB | 10.0.0.10 |
+| **DC01** | Domain Controller | Windows Server 2019 | 4GB | 10.0.0.10 |
 | **WIN10-CLIENT01** | Endpoint Client | Windows 10 Enterprise | 6GB | 10.0.0.20 |
 - **Server DNS (127.0.0.1):** The Domain Controller (`DC01`) was configured with a loop-back address (`127.0.0.1`) as its primary DNS server. This configuration is a critical prerequisite for the proper functioning of Active Directory Domain Services (AD DS).
 - **Client DNS (10.0.0.10):** the client points to the server to ensure all queries are routed through the DC, enabling future logging and domain resolution and is a crucial step for joining the domain
