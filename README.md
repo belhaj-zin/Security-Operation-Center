@@ -436,3 +436,50 @@ Access to the OPNsense management interface was hardened during the initial setu
 
 **Strategic Importance for the SOC**
 By placing OPNsense at the edge of the `10.0.0.0/24` subnet, we have created a **Choke Point**. In later phases of this project, we will configure OPNsense to log all blocked traffic and lateral movement attempts, providing the raw data necessary for incident response simulations.
+
+**Firewall Rules (LAN Default Allow) :**
+
+![image.png](Rapport%20SOC/image%2021.png)
+
+**This rule ensures:**
+
+- Internal VMs can communicate freely
+- Domain services traffic (DNS 53, LDAP 389, SMB 445) flows normally
+- Firewall does not block legitimate AD operations
+
+---
+
+## Zenarmor/Suricata for IDS mode
+
+To provide deep packet inspection (DPI) and threat detection, Suricata and Zenarmor were deployed on the OPNsense gateway. This ensures that all traffic entering or leaving the `securinets.local` domain is analyzed for malicious patterns and policy violations.
+
+### **Suricata (IDS/IPS):**
+
+At first we configured suricata in IDS ( Intrusion Detection System ) monitoring to establish a traffic base line without interrupting connectivity 
+
+![image.png](Rapport%20SOC/image%2022.png)
+
+#### Ruleset Configuration & Downloads
+
+**Rulesets Enabled**
+
+**OPNsense GUI → Services → Intrusion Detection → Download Tab**
+
+After checking “Enable all rulesets” and clicking “Download & Update Rules”:
+
+| Ruleset | Version | Status | Detects | Enabled |
+| --- | --- | --- | --- | --- |
+| **ET Open/emerging-scan** | Latest | ✅ Downloaded | Port scans (Nmap, Masscan) | YES |
+| **ET Open/emerging-exploit** | Latest | ✅ Downloaded | Exploit attempts, shellcode | YES |
+| **ET Open/emerging-games** | Latest | ⚠️ Available | Gaming traffic patterns | **NO** |
+| **ET Open/emerging-p2p** | Latest | ⚠️ Available | P2P protocols | **NO** |
+| **ET Open/emerging-voip** | Latest | ⚠️ Available | VoIP traffic analysis | **NO** |
+
+**Ruleset Selection Rationale**
+
+**Enabled (Relevant to Lab)**
+
+- **emerging-scan**: Detects Nmap quiet scans (`sS`), SYN scans, and UDP probes
+- **emerging-exploit**: Catches exploit payloads, SQL injection, XSS attempts
+
+![image.png](Rapport%20SOC/image%2023.png)
